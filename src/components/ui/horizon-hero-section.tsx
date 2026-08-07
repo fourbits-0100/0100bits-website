@@ -5,10 +5,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { useContent } from '../../context/ContentProvider';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const Component = () => {
+    const { getContent } = useContent();
+    const heroContent = getContent('home', 'hero');
+
+    // Safety check fallback
+    const titleText = heroContent.title || 'FOUR BITS';
+    const subTitleLines = heroContent.subtitle_lines || [];
+    const scrollSections = heroContent.scroll_sections || [];
+
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const titleRef = useRef<HTMLHeadingElement>(null);
@@ -587,19 +596,15 @@ export const Component = () => {
             {/* Main content */}
             <div className="hero-content cosmos-content fixed inset-0 flex flex-col items-center justify-center z-10 pointer-events-none px-4">
                 <h1 ref={titleRef} className="hero-title text-7xl md:text-9xl font-['Cinzel_Decorative'] font-bold tracking-widest text-center mb-6" style={{ visibility: 'hidden' }}>
-                    {splitTitle("FOUR BITS")}
+                    {splitTitle(titleText)}
                 </h1>
 
                 <div ref={subtitleRef} className="hero-subtitle cosmos-subtitle text-center text-xl md:text-2xl font-['Cinzel_Decorative'] font-light tracking-wide max-w-4xl" style={{ visibility: 'hidden' }}>
-                    <p className="subtitle-line mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
-                        Engineering Begins With Understanding.
-                    </p>
-                    <p className="subtitle-line mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
-                        Software is not the starting point.
-                    </p>
-                    <p className="subtitle-line text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
-                        Understanding people, processes, and business objectives is.
-                    </p>
+                    {subTitleLines.map((line: string, idx: number) => (
+                        <p key={idx} className={`subtitle-line ${idx < subTitleLines.length - 1 ? 'mb-2' : ''} text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]`}>
+                            {line}
+                        </p>
+                    ))}
                 </div>
             </div>
 
@@ -620,44 +625,32 @@ export const Component = () => {
             {/* Additional sections for scrolling */}
             <div className="scroll-sections relative z-20 pointer-events-none pt-[100vh]">
                 {[...Array(2)].map((_, i) => {
-                    const titles: Record<number, string> = {
-                        0: 'FOUR BITS',
-                        1: 'FOUR BITS',
-                        2: 'FOUR BITS'
-                    };
-
-                    const subtitles: Record<number, { line1: string, line2: string, line3?: string }> = {
-                        0: {
-                            line1: 'Engineering Begins With Understanding.',
-                            line2: 'Software is not the starting point.',
-                            line3: 'Understanding people, processes, and business objectives is.'
-                        },
-                        1: {
-                            line1: 'Before we write a single line of code, we study how your organization works,',
-                            line2: 'where value is created, and where technology can remove friction.'
-                        },
-                        2: {
-                            line1: 'Only then do we begin engineering.',
-                            line2: 'Because successful software is built around businesses—not around frameworks.'
-                        }
-                    };
+                    const sectionData = scrollSections[i] || {};
+                    const scrollTitle = sectionData.title || titleText;
+                    const l1 = sectionData.line1 || '';
+                    const l2 = sectionData.line2 || '';
+                    const l3 = sectionData.line3 || '';
 
                     return (
                         <section key={i} className="content-section h-screen flex flex-col items-center justify-center px-4">
                             <h1 className="hero-title text-7xl md:text-9xl font-['Cinzel_Decorative'] font-bold tracking-widest text-center mb-6 opacity-0 transition-opacity duration-500">
-                                {splitTitle(titles[i + 1] || 'FOUR BITS')}
+                                {splitTitle(scrollTitle)}
                             </h1>
 
                             <div className="hero-subtitle cosmos-subtitle text-center text-xl md:text-2xl font-['Cinzel_Decorative'] font-light tracking-wide max-w-4xl opacity-0 transition-opacity duration-500">
-                                <p className="subtitle-line mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
-                                    {subtitles[i + 1].line1}
-                                </p>
-                                <p className="subtitle-line text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
-                                    {subtitles[i + 1].line2}
-                                </p>
-                                {subtitles[i + 1].line3 && (
+                                {l1 && (
+                                    <p className="subtitle-line mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
+                                        {l1}
+                                    </p>
+                                )}
+                                {l2 && (
+                                    <p className="subtitle-line text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
+                                        {l2}
+                                    </p>
+                                )}
+                                {l3 && (
                                     <p className="subtitle-line mt-2 text-transparent bg-clip-text bg-gradient-to-r from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[30px] -m-[30px]">
-                                        {subtitles[i + 1].line3}
+                                        {l3}
                                     </p>
                                 )}
                             </div>

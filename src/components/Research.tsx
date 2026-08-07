@@ -49,9 +49,7 @@ export function Research() {
 
                         <div className="lg:col-span-6">
                             <div className="p-8 md:p-10 glass-card bg-white/30 backdrop-blur-md rounded-none h-full relative overflow-hidden">
-                                <div className="absolute top-0 right-0 p-8 text-[200px] text-white/5 font-bold leading-none select-none pointer-events-none">
-                                    R
-                                </div>
+
                                 <h4 className="text-xl font-light text-primary tracking-wide mb-8">Current areas of exploration include</h4>
                                 <ul className="space-y-6 relative z-10">
                                     {researchAreas.map((area, index) => (
