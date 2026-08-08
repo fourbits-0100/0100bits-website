@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { GridBackground } from "./components/GridBackground";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
@@ -23,6 +23,20 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => (
 );
 
 export default function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 't' || e.key.toLowerCase() === 'y' || e.key.toLowerCase() === 'l')) {
+        e.preventDefault();
+        navigate('/admin/login');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
+
   return (
     <Routes>
       <Route path="/admin/*" element={<AdminApp />} />
