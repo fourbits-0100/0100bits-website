@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { GridBackground } from "./components/GridBackground";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { Seo } from "./components/Seo";
 
 // Pages
 import { Home } from "./pages/Home";
@@ -15,7 +15,12 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Ensure the scroll triggers after the new layout renders
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTo(0, 0);
+      document.body.scrollTo(0, 0);
+    }, 10);
   }, [pathname]);
 
   return null;
@@ -23,7 +28,7 @@ const ScrollToTop = () => {
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="relative min-h-screen selection:bg-accent/30 selection:text-primary">
-    <GridBackground />
+    <Seo />
     <Navbar />
     <main className="relative z-10 pt-16">
       {children}

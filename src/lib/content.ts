@@ -697,7 +697,57 @@ export const DEFAULTS: Record<string, Record<string, any>> = {
         brand: { name: 'IV BITS', logoUrl: '' },
         navbar: { links: [{ title: 'Home', url: '/' }] },
         footer: { text: '© 2026 IV BITS.' },
-        contact: { email: 'fourbits0100@gmail.com' }
+        contact: { email: 'fourbits0100@gmail.com' },
+        seo: {
+            home: {
+                title: 'IV BITS | Engineering Intelligent Businesses',
+                description: 'IV BITS designs and builds intelligent software systems — artificial intelligence, enterprise applications, and digital products engineered around how your business actually operates.',
+                keywords: ['AI Engineering', 'Software Development', 'Enterprise Applications', 'AI Automation', 'Digital Products'],
+                canonical_url: '/',
+                robots: 'index,follow',
+                og_title: 'IV BITS | Engineering Intelligent Businesses',
+                og_description: 'IV BITS designs and builds intelligent software systems — AI, enterprise applications, and digital products engineered around how your business actually operates.',
+                og_image: '/og/default.jpg',
+                og_type: 'website',
+                twitter_card: 'summary_large_image'
+            },
+            about: {
+                title: 'About | IV BITS — Engineering Intelligent Systems',
+                description: 'We are a specialized engineering firm focused on solving complex business problems through thoughtful architecture, artificial intelligence, and scalable software.',
+                keywords: ['Software Engineering', 'AI Systems', 'About IV BITS'],
+                canonical_url: '/about',
+                robots: 'index,follow',
+                og_title: 'About | IV BITS — Engineering Intelligent Systems',
+                og_description: 'We are a specialized engineering firm focused on solving complex business problems through thoughtful architecture, artificial intelligence, and scalable software.',
+                og_image: '/og/default.jpg',
+                og_type: 'website',
+                twitter_card: 'summary_large_image'
+            },
+            solutions: {
+                title: 'Solutions | IV BITS — Engineering Capabilities',
+                description: "We don't just deploy software. We architect entire technological ecosystems for resilient businesses — AI, enterprise applications, and intelligent automation.",
+                keywords: ['AI Solutions', 'Enterprise Software', 'Intelligent Automation', 'Digital Products'],
+                canonical_url: '/solutions',
+                robots: 'index,follow',
+                og_title: 'Solutions | IV BITS — Engineering Capabilities',
+                og_description: "We don't just deploy software. We architect entire technological ecosystems for resilient businesses — AI, enterprise applications, and intelligent automation.",
+                og_image: '/og/default.jpg',
+                og_type: 'website',
+                twitter_card: 'summary_large_image'
+            },
+            contact: {
+                title: 'Contact | IV BITS',
+                description: 'Reach out to discuss your next major technological transition. We work with organizations worldwide on AI platforms, enterprise applications, and digital products.',
+                keywords: ['Contact IV BITS', 'Software Consultation', 'AI Consultation'],
+                canonical_url: '/contact',
+                robots: 'index,follow',
+                og_title: 'Contact | IV BITS',
+                og_description: 'Reach out to discuss your next major technological transition. We work with organizations worldwide on AI platforms, enterprise applications, and digital products.',
+                og_image: '/og/default.jpg',
+                og_type: 'website',
+                twitter_card: 'summary_large_image'
+            }
+        }
     }
 };
 

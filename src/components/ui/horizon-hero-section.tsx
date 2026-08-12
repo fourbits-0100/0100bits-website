@@ -40,12 +40,36 @@ export const Component = () => {
         stars: [],
         nebula: null,
         mountains: [],
+        atmosphere: null,
         animationId: null,
         targetCameraX: 0,
         targetCameraY: 30,
         targetCameraZ: 100,
         locations: []
     });
+
+    // Theme Colors
+    const blueNebula1 = new THREE.Color(0x0033ff);
+    const blueNebula2 = new THREE.Color(0xff0066);
+    const purpleNebula1 = new THREE.Color(0x4a00e0);
+    const purpleNebula2 = new THREE.Color(0xff0099);
+
+    const blueAtmo = new THREE.Color(0.3, 0.6, 1.0);
+    const purpleAtmo = new THREE.Color(0.5, 0.1, 0.7);
+
+    const blueMountains = [
+        new THREE.Color(0x1a1a2e),
+        new THREE.Color(0x16213e),
+        new THREE.Color(0x0f3460),
+        new THREE.Color(0x0a4668)
+    ];
+
+    const purpleMountains = [
+        new THREE.Color(0x2d1b2e),
+        new THREE.Color(0x3a1c3e),
+        new THREE.Color(0x52225e),
+        new THREE.Color(0x6e2570)
+    ];
 
     // Initialize Three.js
     useEffect(() => {
@@ -301,7 +325,8 @@ export const Component = () => {
             const geometry = new THREE.SphereGeometry(600, 32, 32);
             const material = new THREE.ShaderMaterial({
                 uniforms: {
-                    time: { value: 0 }
+                    time: { value: 0 },
+                    themeColor: { value: new THREE.Color(0.3, 0.6, 1.0) }
                 },
                 vertexShader: `
           varying vec3 vNormal;
@@ -317,10 +342,11 @@ export const Component = () => {
           varying vec3 vNormal;
           varying vec3 vPosition;
           uniform float time;
+          uniform vec3 themeColor;
           
           void main() {
             float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
-            vec3 atmosphere = vec3(0.3, 0.6, 1.0) * intensity;
+            vec3 atmosphere = themeColor * intensity;
             
             float pulse = sin(time * 2.0) * 0.1 + 0.9;
             atmosphere *= pulse;
@@ -335,6 +361,7 @@ export const Component = () => {
 
             const atmosphere = new THREE.Mesh(geometry, material);
             refs.scene.add(atmosphere);
+            refs.atmosphere = atmosphere;
         };
 
         const animate = () => {
@@ -350,9 +377,20 @@ export const Component = () => {
                 }
             });
 
+            // Calculate theme mix factor (0 to 1) oscillating over an approx 15 second period
+            const themeMix = (Math.sin(time * 0.4) + 1.0) * 0.5;
+
             // Update nebula
             if (refs.nebula && refs.nebula.material.uniforms) {
                 refs.nebula.material.uniforms.time.value = time * 0.5;
+                refs.nebula.material.uniforms.color1.value.lerpColors(blueNebula1, purpleNebula1, themeMix);
+                refs.nebula.material.uniforms.color2.value.lerpColors(blueNebula2, purpleNebula2, themeMix);
+            }
+
+            // Update atmosphere
+            if (refs.atmosphere && refs.atmosphere.material.uniforms) {
+                refs.atmosphere.material.uniforms.time.value = time;
+                refs.atmosphere.material.uniforms.themeColor.value.lerpColors(blueAtmo, purpleAtmo, themeMix);
             }
 
             // Smooth camera movement with easing
@@ -384,11 +422,15 @@ export const Component = () => {
                 refs.camera.lookAt(0, 10, -600);
             }
 
-            // Parallax mountains with subtle animation
+            // Parallax mountains with subtle animation and live color changes
             refs.mountains.forEach((mountain: any, i: number) => {
                 const parallaxFactor = 1 + i * 0.5;
                 mountain.position.x = Math.sin(time * 0.1) * 2 * parallaxFactor;
                 mountain.position.y = 50 + (Math.cos(time * 0.15) * 1 * parallaxFactor);
+
+                if (mountain.material && mountain.material.color) {
+                    mountain.material.color.lerpColors(blueMountains[i], purpleMountains[i], themeMix);
+                }
             });
 
             if (refs.composer) {
@@ -426,15 +468,22 @@ export const Component = () => {
                 starField.geometry.dispose();
                 starField.material.dispose();
             });
+            refs.stars = [];
 
             refs.mountains.forEach((mountain: any) => {
                 mountain.geometry.dispose();
                 mountain.material.dispose();
             });
+            refs.mountains = [];
 
             if (refs.nebula) {
                 refs.nebula.geometry.dispose();
                 refs.nebula.material.dispose();
+            }
+
+            if (refs.atmosphere) {
+                refs.atmosphere.geometry.dispose();
+                refs.atmosphere.material.dispose();
             }
 
             if (refs.renderer) {

@@ -28,6 +28,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
                         <li><Link to="/admin/contact" className="block px-3 py-2 rounded text-white/70 hover:text-white hover:bg-white/5 transition-colors">Contact</Link></li>
                         <li className="pt-4 pb-2 px-3 text-xs font-semibold text-white/30 uppercase tracking-widest">System</li>
                         <li><Link to="/admin/settings" className="block px-3 py-2 rounded text-white/70 hover:text-white hover:bg-white/5 transition-colors">Global Settings</Link></li>
+                        <li><Link to="/admin/seo" className="block px-3 py-2 rounded text-white/70 hover:text-white hover:bg-white/5 transition-colors">SEO Manager</Link></li>
                         <li className="pt-4 pb-2 px-3 text-xs font-semibold text-white/30 uppercase tracking-widest">Inbox</li>
                         <li><Link to="/admin/enquiries" className="block px-3 py-2 rounded text-white/70 hover:text-white hover:bg-white/5 transition-colors flex items-center justify-between">Enquiries</Link></li>
                     </ul>
@@ -54,6 +55,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 import { PageEditor } from './pages/PageEditor';
 import { Enquiries } from './pages/Enquiries';
+import { SeoManager } from './pages/SeoManager';
 
 // Temporary placeholder for page editors
 const Dashboard = () => <div><h1 className="text-3xl font-light mb-4">Dashboard</h1><p className="text-white/50">Select a page from the sidebar to edit its content.</p></div>;
@@ -70,6 +72,7 @@ export default function AdminApp() {
                 <Route path="/services" element={<ProtectedRoute><PageEditor name="Solutions" /></ProtectedRoute>} />
                 <Route path="/contact" element={<ProtectedRoute><PageEditor name="Contact" /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><PageEditor name="Settings" /></ProtectedRoute>} />
+                <Route path="/seo" element={<ProtectedRoute><SeoManager /></ProtectedRoute>} />
             </Routes>
         </AuthProvider>
     );

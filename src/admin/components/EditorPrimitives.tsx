@@ -26,6 +26,22 @@ export const TextArea = ({ value, onChange, label, disabled }: any) => (
     </div>
 );
 
+export const SelectInput = ({ value, onChange, label, options, disabled }: any) => (
+    <div className="mb-4">
+        <label className="block text-xs font-semibold text-white/50 uppercase mb-1">{label}</label>
+        <select
+            value={value || options?.[0] || ''}
+            onChange={e => onChange(e.target.value)}
+            className="w-full bg-[#1a1a1a] border border-white/10 rounded px-3 py-2 text-sm outline-none focus:border-primary text-white"
+            disabled={disabled}
+        >
+            {(options || []).map((opt: string) => (
+                <option key={opt} value={opt}>{opt}</option>
+            ))}
+        </select>
+    </div>
+);
+
 export const ListEditor = ({ value, onChange, label, disabled }: any) => {
     const items = Array.isArray(value) ? value : [];
 
