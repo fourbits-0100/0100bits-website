@@ -357,7 +357,16 @@ export const Component = () => {
 
             // Smooth camera movement with easing
             if (refs.camera && refs.targetCameraX !== undefined) {
-                const smoothingFactor = 0.05; // Lower = smoother but slower
+                if (!refs.startTime) refs.startTime = Date.now();
+
+                // Keep the initial "assemble" effect for the first 2.5 seconds, then transition to instant scroll
+                const elapsedMs = Date.now() - refs.startTime;
+                let smoothingFactor = 0.05;
+                if (elapsedMs > 2500) {
+                    smoothingFactor = 1;
+                } else if (elapsedMs > 2000) {
+                    smoothingFactor = 0.05 + (0.95 * ((elapsedMs - 2000) / 500));
+                }
 
                 // Calculate smooth position with easing
                 smoothCameraPos.current.x += (refs.targetCameraX - smoothCameraPos.current.x) * smoothingFactor;
@@ -571,9 +580,18 @@ export const Component = () => {
 
     const splitTitle = (text: string) => {
         return text.split('').map((char, i) => (
-            <span key={i} className="title-char inline-block text-transparent bg-clip-text bg-gradient-to-tr from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[60px] -m-[60px]">
-                {char === ' ' ? '\u00A0' : char}
-            </span>
+            char === ' ' ? (
+                <React.Fragment key={i}>
+                    <br className="md:hidden" />
+                    <span className="title-char hidden md:inline-block text-transparent bg-clip-text bg-gradient-to-tr from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[60px] -m-[60px]">
+                        {'\u00A0'}
+                    </span>
+                </React.Fragment>
+            ) : (
+                <span key={i} className="title-char inline-block text-transparent bg-clip-text bg-gradient-to-tr from-[#1B053A] via-[#8B031E] to-[#1B053A] p-[60px] -m-[60px]">
+                    {char}
+                </span>
+            )
         ));
     };
 
@@ -585,12 +603,6 @@ export const Component = () => {
 
             {/* Side menu */}
             <div ref={menuRef} className="side-menu fixed left-8 top-1/2 -translate-y-1/2 z-50 mix-blend-difference" style={{ visibility: 'hidden' }}>
-                <div className="menu-icon flex flex-col gap-1.5 cursor-pointer mb-8">
-                    <span className="w-8 h-0.5 bg-white block"></span>
-                    <span className="w-6 h-0.5 bg-white block"></span>
-                    <span className="w-8 h-0.5 bg-white block"></span>
-                </div>
-                <div className="vertical-text writing-vertical-rl transform rotate-180 text-white tracking-[0.3em] font-medium text-sm">SPACE</div>
             </div>
 
             {/* Main content */}
